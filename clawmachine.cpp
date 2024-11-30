@@ -15,6 +15,7 @@ int mouseEsquerdoAtivo = 0; // Indica se o botao esquerdo esta pressionado
 
 float trilhoInferiorZ = 0.0;  // Coordenada Z do centro do trilho inferior
 float tamanhoBraco = 3.0;     // Comprimento do braco da garra
+float bracoX = 0.0;  // Coordenada X do braco da garra
 
 void inicializa()
 {
@@ -215,7 +216,7 @@ void desenhaBraco()
 
             // braco
             glPushMatrix();
-                glTranslatef(0.0, -(tamanhoBraco/2)-0.25, 0.0);
+                glTranslatef(bracoX, -(tamanhoBraco/2)-0.25, 0.0);
                 glColor3f(0.4, 0.4, 0.4);
                 glPushMatrix();
                     glScalef(0.5, tamanhoBraco, 0.5);
@@ -326,15 +327,19 @@ void teclado(unsigned char tecla, int x, int y)
         break;
     case 'w':
         if (trilhoInferiorZ > -3.2)
-        {
             trilhoInferiorZ -= 0.1;  // move garra para o fundo
-        }
         break;
     case 's':
         if (trilhoInferiorZ < 3.2)
-        {
             trilhoInferiorZ += 0.1;  // move garra para a frente
-        }
+        break;
+    case 'a':
+        if (bracoX > -3.2)
+            bracoX -= 0.1;  // move o braco para a esquerda
+        break;
+    case 'd':
+        if (bracoX < 3.2)
+            bracoX += 0.1;  // move o braco para a direita
         break;
     case 27:
         exit(0);
