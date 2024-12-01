@@ -13,9 +13,10 @@ int mouseXAnterior = 0;     // ultima posicao X do mouse
 int mouseYAnterior = 0;     // ultima posicao Y do mouse
 int mouseEsquerdoAtivo = 0; // Indica se o botao esquerdo esta pressionado
 
-float trilhoInferiorZ = 0.0;  // Coordenada Z do centro do trilho inferior
-float tamanhoBraco = 3.0;     // Comprimento do braco da garra
-float bracoX = 0.0;  // Coordenada X do braco da garra
+float trilhoInferiorZ = 0.0;    // Coordenada Z do centro do trilho inferior
+float tamanhoBraco = 2.0;       // Comprimento do braco da garra
+float bracoX = 0.0;             // Coordenada X do braco da garra
+float anguloGarra = -30.0;      // Angulo de abertura da garra
 
 void inicializa()
 {
@@ -195,12 +196,30 @@ void desenhaBrinquedos()
     }
 }
 
+void desenhaGarra()
+{
+    glPushMatrix();
+        glRotatef(anguloGarra, 1.0, 0.0, 0.0);
+        glPushMatrix();
+            glTranslatef(0.0, -0.6, 0.0);
+            glScalef(0.2, 1.2, 0.2);
+            glutSolidCube(1.0);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(0.0, -1.4, -0.2);
+            glRotatef(45.0, 1.0, 0.0, 0.0);
+            glScalef(0.2, 0.8, 0.2);
+            glutSolidCube(1.0);
+        glPopMatrix();
+    glPopMatrix();
+}
+
 void desenhaBraco()
 {
     // trilho superior do braco (fixo)
     glPushMatrix();
         glTranslatef(0.0, 7.8, 0.0);
-        glColor3f(0.4, 0.1, 0.0);
+        glColor3f(0.6, 0.2, 0.1);
         glPushMatrix();
             glScalef(1.0, 1.0, 16.0);
             glutSolidCube(0.5);
@@ -227,54 +246,21 @@ void desenhaBraco()
                 glPushMatrix();
                     glTranslatef(0.0, -(tamanhoBraco/2), 0.0);
                     glColor3f(0.5, 0.5, 0.5);
-                    glutSolidSphere(0.6, 20, 20);
+                    glutSolidSphere(0.5, 20, 20);
 
                     // hastes da garra
-                    // a fazer
+                    glColor3f(0.2, 0.2, 0.8);
+                    glPushMatrix();
+                        for (int i = 0; i < 4; i++)
+                        {
+                            glRotatef(90.0*i, 0.0, 1.0, 0.0); // rotacao para formar as 4 garras
+                            desenhaGarra();
+                        }
+                    glPopMatrix();
                 glPopMatrix();
             glPopMatrix();
         glPopMatrix();
     glPopMatrix();
-}
-
-void desenhaBraco1()
-{
-    // haste da garra1
-    glPushMatrix();
-    glTranslatef(0.0, 7.0, 0.0);
-    glScalef(0.2, 4.0, 0.2);
-    glColor3f(1.0, 8.0, 0.0);
-    glutSolidCube(1.0);
-    glPopMatrix();
-
-    // haste da garra2
-    glPushMatrix();
-    glTranslatef(0.9, 5.0, 0.0);
-    glScalef(2.0, 0.2, 0.2);
-    glColor3f(1.0, 8.0, 0.0);
-    glutSolidCube(1.0);
-    glPopMatrix();
-
-    // bola da garra
-    glPushMatrix();
-    glTranslatef(2.0, 4.2, 0.0);
-    glColor3f(1.0, 0.0, 0.0);
-    glutSolidSphere(0.75, 20, 20); // Centro da garra (raio = 1.0)
-    glPopMatrix();
-
-    // Garras (4 hastes)
-    float raioGarra = 1.0; // Atualize aqui o raio da esfera central da garra
-    for (int i = 0; i < 4; i++)
-    {
-        glPushMatrix();
-        glTranslatef(2.0, 4.2, 0.0);
-        glRotatef(90.0 * i, 0.0, 1.0, 0.0); // Rotacao para formar garras
-        glTranslatef(0.75, -0.8, 0.0);
-        glScalef(0.1, 1.5, 0.1); // Escala da haste
-        glColor3f(1.0, 0.5, 0.0);
-        glutSolidCube(1.0);
-        glPopMatrix();
-    }
 }
 
 void desenhaMaquinaBichinhos()
@@ -340,6 +326,22 @@ void teclado(unsigned char tecla, int x, int y)
     case 'd':
         if (bracoX < 3.2)
             bracoX += 0.1;  // move o braco para a direita
+        break;
+    case 'r':
+        if (tamanhoBraco > 1.0)
+            tamanhoBraco -= 0.1;  // retrai o braco, sobe a garra
+        break;
+    case 'f':
+        if (tamanhoBraco < 5.5)
+            tamanhoBraco += 0.1;  // extende o braco, desce a garra
+        break;
+    case 'q':
+        if (anguloGarra > -75.0)
+            anguloGarra -= 1.0;  // abre a garra
+        break;
+    case 'e':
+        if (anguloGarra < -25.0)
+            anguloGarra += 1.0;  // fecha a garra
         break;
     case 27:
         exit(0);
